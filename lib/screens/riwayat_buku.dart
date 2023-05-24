@@ -207,7 +207,7 @@ class _Riwayat_buku extends State<Riwayat_buku> {
   async {
     try {
       print('masuk');
-      http.Response response = await http.post(Uri.parse('http://192.168.43.158/perpon/RestApi/ApiRiwayat/Menunggu'),
+      http.Response response = await http.post(Uri.parse(ApiURL+'/ApiRiwayat/Menunggu'),
       body:{
         'id_mahasiswa': idMahasiswa,
       });
