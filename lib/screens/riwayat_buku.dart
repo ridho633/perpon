@@ -22,12 +22,14 @@ class Riwayat_buku extends StatefulWidget {
 class _Riwayat_buku extends State<Riwayat_buku> {
   @override
   List<Riwayat> DataRiwayatMenunggu = [];
-  int? idMahasiswa;
+  String idMahasiswa = '';
+
+  // List<dynamic> dataRiwayat = [];
 
   getUserId() async {
     var id = '';
     id = await getLocalData('id_mahasiswa');
-    idMahasiswa = int.parse(id);
+    idMahasiswa = id;
     print('idMahasiswa: $idMahasiswa');
   }
 
@@ -57,28 +59,19 @@ class _Riwayat_buku extends State<Riwayat_buku> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        // ...DataRiwayatMenunggu.map((riwayat) {
-                        //   return Tampilan_riwayat_buku(detailRiwayat: riwayat);
-                        // })
+                        header(),
+                      Container(
+                            height: 50,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: buttonMenu(),
+                          ),
+                          SizedBox(height: Spacing.largePadding),
+                        ...DataRiwayatMenunggu.map((riwayat) {
+                          return Tampilan_riwayat_buku(detailRiwayat: riwayat);
+                        })
                       ],
                     ),
                   ),
-
-            //         Expanded(
-            //     child: SingleChildScrollView(
-            //     child: Column(
-            //     children: [
-            //         header(),
-            //   Container(
-            //     height: 50,
-            //     padding: EdgeInsets.symmetric(horizontal: 10),
-            //     child: buttonMenu(),
-            //   ),
-            //   SizedBox(height: Spacing.largePadding),
-            //   // TampilanBuku(),
-            //   SizedBox(height: Spacing.largePadding),
-            //   ],
-            // ))),
                 ))));
   }
 
@@ -210,32 +203,34 @@ class _Riwayat_buku extends State<Riwayat_buku> {
     );
   }
 
-  Future<List<Riwayat>> fetchRiwayatMenunggu()
+  Future fetchRiwayatMenunggu()
   async {
     try {
       print('masuk');
-      http.Response response = await http.post(Uri.parse('http://192.168.1.74/perpon/RestApi/ApiRiwayat/Menunggu'),
+      http.Response response = await http.post(Uri.parse('http://192.168.43.158/perpon/RestApi/ApiRiwayat/Menunggu'),
       body:{
-        'id_mahasiswa':idMahasiswa,
+        'id_mahasiswa': idMahasiswa,
       });
 
       if (response.statusCode == 200) {
         print(response.body);
+        print('data');
+        // dataRiwayat.clear();
         DataRiwayatMenunggu.clear();
         var json = jsonDecode(response.body);
         print(json);
         for (var i = 0; i < json.length; i++) {
           setState(() {
-            // DataRiwayatMenunggu.add(json[i]);
             Riwayat riwayat = Riwayat.fromJson(json[i]);
             DataRiwayatMenunggu.add(riwayat);
+            // dataRiwayat.add(json[i]);
           });
         }
         // debugPrint(DataRiwayatMenunggu[0].toString());
         // debugPrint(DataRiwayatMenunggu.toString());
         return DataRiwayatMenunggu;
       } else {
-        throw Exception('Failed to load');
+        throw Exception('Check Connection');
       }
     } on SocketException catch (e) {
       throw Exception('Failed to load');
